@@ -9,6 +9,7 @@ var piexif = require("piexifjs");
 /* GET home page. */
 let download = function(uri, filename, callback){
   request.head(uri, function(err, res, body){
+
       if(res){
           if(res.statusCode == 200){
               request(uri).pipe(fs.createWriteStream(filename)).on('close',callback);
@@ -22,6 +23,15 @@ let download = function(uri, filename, callback){
       }
   });
 };
+function makeid(length) {
+    var result           = '';
+    var characters       = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    var charactersLength = characters.length;
+    for ( var i = 0; i < length; i++ ) {
+        result += characters.charAt(Math.floor(Math.random() * charactersLength));
+    }
+    return result;
+}
 router.get('/', function(req, res, next) {
   res.render('index', { title: 'Express' });
 });
@@ -39,7 +49,8 @@ router.get('/request-image',(req,res) => {
         if(!maxSize){
             maxSize = 1750
         }
-        let uriFile = fileName+'.jpg'
+
+        let uriFile = makeid(50)+'.jpg'
 
         download(url, uriFile, function(err){
             if(err){
